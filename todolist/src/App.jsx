@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import "./App.css";
+import AddTodo from "./components/AddTodo";
+import TodoList from "./components/TodoList";
+import Timer from "./components/Timer";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [todos, setTodos] = useState([
+    {
+      id: 1,
+      description: "Prepare dinner",
+      deadline: "12-03-2024",
+    },
+    {
+      id: 2,
+      description: "Dye my hair",
+      deadline: "05-04-2024",
+    },
+    {
+      id: 3,
+      description: "Finish homework for React1",
+      deadline: "15-03-2024",
+    },
+  ]);
+
+  const addTodo = (newTodo) => {
+    setTodos((prevTodos) => [
+      ...prevTodos,
+      { id: prevTodos.length + 1, ...newTodo, deadline: newTodo.deadline },
+    ]);
+  };
+
+  const toggleDone = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo
+      )
+    );
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app">
+      <Timer />
+      <h1 className="app_title">What I need ToDo? &#129300;</h1>
+      <p className="app_description">Create your own list</p>
 
-export default App
+      {todos.length === 0 ? (
+        <p>No items</p>
+      ) : (
+        <TodoList
+          todos={todos}
+          toggleDone={toggleDone}
+          deleteTodo={deleteTodo}
+        />
+      )}
+      <AddTodo addTodo={addTodo} />
+    </div>
+  );
+};
+export default App;
